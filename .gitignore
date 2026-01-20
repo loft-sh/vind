@@ -1,0 +1,29 @@
+# VIND .gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+
+# Cluster configs with sensitive data
+vcluster-*.yaml
+!examples/*.yaml
+
+# Documentation builds
+docs/_build/
+site/
+
+# Local test files
+test-*.yaml
+local-*.yaml

@@ -1,0 +1,61 @@
+# Example LoadBalancer Service for VIND
+# This demonstrates how to use LoadBalancer services in VIND
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: nginx
+---
+# Example Deployment to use with the LoadBalancer service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+# Usage:
+# 1. Create your VIND cluster with load balancer enabled:
+#    vcluster create my-cluster --set experimental.docker.loadBalancer.enabled=true
+#
+# 2. Connect to the cluster:
+#    vcluster connect my-cluster
+#
+# 3. Apply this configuration:
+#    kubectl apply -f loadbalancer-service.yaml
+#
+# 4. Check the service:
+#    kubectl get svc nginx-loadbalancer
+#    # Note the EXTERNAL-IP column - it will have an IP address!
+#
+# 5. Access your service:
+#    curl http://<EXTERNAL-IP>
+#
+# The LoadBalancer service will automatically get an IP from the Docker network
+# and be accessible directly without any additional setup!
