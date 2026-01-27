@@ -1,10 +1,10 @@
-# VIND vs KinD: Detailed Comparison
+# vind vs KinD: Detailed Comparison
 
-This document provides a comprehensive comparison between VIND (vCluster in Docker) and KinD (Kubernetes in Docker).
+This document provides a comprehensive comparison between vind (vCluster in Docker) and KinD (Kubernetes in Docker).
 
 ## Quick Comparison
 
-| Feature | VIND | KinD |
+| Feature | vind | KinD |
 |---------|------|------|
 | **UI Platform** | ✅ Built-in vCluster Platform UI | ❌ Command-line only |
 | **Sleep/Wake** | ✅ Native pause & resume | ❌ Must delete & recreate |
@@ -20,7 +20,7 @@ This document provides a comprehensive comparison between VIND (vCluster in Dock
 
 ### 1. User Interface
 
-#### VIND
+#### vind
 - **Built-in Web UI**: Free vCluster Platform provides beautiful web interface
 - **Cluster Management**: Visual overview of all clusters
 - **Resource Monitoring**: Built-in metrics and monitoring
@@ -28,7 +28,7 @@ This document provides a comprehensive comparison between VIND (vCluster in Dock
 
 ```bash
 # Start the platform UI
-vcluster platform start --docker
+vcluster platform start
 # Access at https://localhost:10443
 ```
 
@@ -37,13 +37,13 @@ vcluster platform start --docker
 - **External Tools**: Need to install separate tools (Lens, Octant, etc.)
 - **Manual Management**: All operations via CLI
 
-**Winner: VIND** - Built-in UI makes management much easier
+**Winner: vind** - Built-in UI makes management much easier
 
 ---
 
 ### 2. Sleep and Wake
 
-#### VIND
+#### vind
 - **Native Support**: Built-in pause/resume functionality
 - **State Preservation**: All data and configurations maintained
 - **Instant Resume**: Clusters resume in seconds
@@ -65,13 +65,13 @@ kind delete cluster --name my-cluster    # Delete (loses state)
 kind create cluster --name my-cluster    # Recreate (slow)
 ```
 
-**Winner: VIND** - Sleep/wake is a game-changer for development
+**Winner: vind** - Sleep/wake is a game-changer for development
 
 ---
 
 ### 3. Load Balancer Services
 
-#### VIND
+#### vind
 - **Automatic**: LoadBalancer services work out of the box
 - **No Setup**: No MetalLB or other tools needed
 - **IP Assignment**: Automatic IP assignment from Docker network
@@ -97,13 +97,13 @@ spec:
 # Multiple steps and components needed
 ```
 
-**Winner: VIND** - Zero-configuration load balancers
+**Winner: vind** - Zero-configuration load balancers
 
 ---
 
 ### 4. Image Pulling and Caching
 
-#### VIND
+#### vind
 - **Pull-through Cache**: Uses local Docker daemon cache
 - **Faster Pulls**: Images already in Docker are instant
 - **Reduced Bandwidth**: No redundant pulls
@@ -112,8 +112,7 @@ spec:
 ```yaml
 experimental:
   docker:
-    registryProxy:
-      enabled: true  # Enable caching
+    # Registry proxy is enabled by default
 ```
 
 #### KinD
@@ -122,13 +121,13 @@ experimental:
 - **Slower**: No local cache utilization
 - **Bandwidth Usage**: Higher bandwidth consumption
 
-**Winner: VIND** - Intelligent caching saves time and bandwidth
+**Winner: vind** - Intelligent caching saves time and bandwidth
 
 ---
 
 ### 5. External Node Joining
 
-#### VIND
+#### vind
 - **Cloud Nodes**: Join real EC2, GCP, Azure instances
 - **VPN Support**: Secure connections via VPN
 - **Hybrid Clusters**: Mix local and cloud nodes
@@ -144,13 +143,13 @@ vcluster join my-cluster --token <token> --node ec2-instance
 - **No Cloud Nodes**: Cannot join external instances
 - **Limited**: Restricted to local environment
 
-**Winner: VIND** - Hybrid capabilities are unmatched
+**Winner: vind** - Hybrid capabilities are unmatched
 
 ---
 
 ### 6. CNI and CSI Flexibility
 
-#### VIND
+#### vind
 - **Flannel Built-in**: Flannel CNI comes pre-configured
 - **Other CNIs Available**: Can manually install Calico, Cilium, etc.
 - **CSI Support**: Full CSI plugin support
@@ -170,13 +169,13 @@ deploy:
 - **Basic Storage**: Simple local storage
 - **Less Flexible**: Harder to customize
 
-**Winner: VIND** - More flexibility for production-like setups
+**Winner: vind** - More flexibility for production-like setups
 
 ---
 
 ### 7. Multi-Cluster Management
 
-#### VIND
+#### vind
 - **Easy Management**: `vcluster list` shows all clusters
 - **Platform UI**: Visual management of multiple clusters
 - **Unified Interface**: Manage all clusters from one place
@@ -191,13 +190,13 @@ vcluster list
 - **No Central View**: No unified management
 - **CLI Only**: All management via command line
 
-**Winner: VIND** - Better multi-cluster experience
+**Winner: vind** - Better multi-cluster experience
 
 ---
 
 ### 8. Resource Usage
 
-#### VIND
+#### vind
 - **Optimized**: Efficient resource usage
 - **Sleep Mode**: Can pause to free resources
 - **Shared Components**: Efficient sharing where possible
@@ -207,13 +206,13 @@ vcluster list
 - **Always Running**: No pause capability
 - **More Containers**: Typically more containers per cluster
 
-**Winner: VIND** - More efficient, especially with sleep mode
+**Winner: vind** - More efficient, especially with sleep mode
 
 ---
 
 ### 9. Ease of Use
 
-#### VIND
+#### vind
 ```bash
 # Create cluster
 vcluster create my-cluster
@@ -233,13 +232,13 @@ kubectl apply -f metallb-config.yaml
 # ... more steps ...
 ```
 
-**Winner: VIND** - Simpler, more automated
+**Winner: vind** - Simpler, more automated
 
 ---
 
 ### 10. Production Readiness
 
-#### VIND
+#### vind
 - **Based on vCluster**: Production-proven technology
 - **Used by Enterprises**: Adobe, CoreWeave, NVIDIA, etc.
 - **40M+ Clusters**: Battle-tested at scale
@@ -250,13 +249,13 @@ kubectl apply -f metallb-config.yaml
 - **CI/CD Tool**: Great for CI/CD pipelines
 - **Less Enterprise Features**: Fewer enterprise capabilities
 
-**Winner: VIND** - More production-ready features
+**Winner: vind** - More production-ready features
 
 ---
 
 ## Use Case Recommendations
 
-### Choose VIND If:
+### Choose vind If:
 - ✅ You want a built-in UI
 - ✅ You need sleep/wake functionality
 - ✅ You want automatic load balancers
@@ -274,17 +273,16 @@ kubectl apply -f metallb-config.yaml
 
 ## Migration from KinD
 
-If you're currently using KinD and want to try VIND:
+If you're currently using KinD and want to try vind:
 
 1. **Export your workloads**:
    ```bash
    kubectl get all --all-namespaces -o yaml > workloads.yaml
    ```
 
-2. **Create VIND cluster**:
+2. **Create vind cluster**:
    ```bash
    vcluster create my-cluster
-   vcluster connect my-cluster
    ```
 
 3. **Import workloads**:
@@ -296,7 +294,7 @@ If you're currently using KinD and want to try VIND:
 
 ## Performance Comparison
 
-| Metric | VIND | KinD |
+| Metric | vind | KinD |
 |--------|------|------|
 | **Cluster Creation** | ~30-60s | ~60-120s |
 | **Resource Usage** | Lower (with sleep) | Higher |
@@ -306,19 +304,19 @@ If you're currently using KinD and want to try VIND:
 
 ## Conclusion
 
-VIND offers significant advantages over KinD:
+vind offers significant advantages over KinD:
 
 1. **Better Developer Experience**: UI, sleep/wake, automatic features
 2. **More Features**: Load balancers, external nodes, caching
 3. **Production Ready**: Based on proven vCluster technology
 4. **Future Proof**: Active development, snapshots coming soon
 
-While KinD is great for simple use cases, VIND provides a more complete solution for modern Kubernetes development.
+While KinD is great for simple use cases, vind provides a more complete solution for modern Kubernetes development.
 
-**Try VIND today and experience the difference!**
+**Try vind today and experience the difference!**
 
 ```bash
-vcluster upgrade --version v0.31.0-rc.7
+vcluster upgrade --version v0.31.0
 vcluster use driver docker
 vcluster create my-cluster
 ```

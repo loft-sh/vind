@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-Common issues and solutions when using VIND.
+Common issues and solutions when using vind.
 
 ## Cluster Creation Issues
 
@@ -36,7 +36,7 @@ Common issues and solutions when using VIND.
 
 5. **Check Docker logs:**
    ```bash
-   docker logs vcluster-my-cluster
+   docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager
    ```
 
 ### Port Already in Use
@@ -151,6 +151,11 @@ Common issues and solutions when using VIND.
    vcluster connect my-cluster --update-current
    ```
 
+3. **Disconnect from cluster:**
+   ```bash
+   vcluster disconnect my-cluster
+   ```
+
 3. **Check kubeconfig location:**
    ```bash
    echo $KUBECONFIG
@@ -167,18 +172,9 @@ Common issues and solutions when using VIND.
 
 **Solutions:**
 
-1. **Verify load balancer is enabled:**
-   ```bash
-   vcluster describe my-cluster | grep -i loadbalancer
-   ```
+1. **Load balancer is enabled by default**
 
-2. **Enable load balancer:**
-   ```bash
-   vcluster create my-cluster \
-     --set experimental.docker.loadBalancer.enabled=true
-   ```
-
-3. **Check Docker network:**
+2. **Check Docker network:**
    ```bash
    docker network inspect vcluster-my-cluster
    ```
@@ -186,9 +182,7 @@ Common issues and solutions when using VIND.
 4. **On macOS, check port forwarding:**
    ```bash
    # May need sudo for privileged ports
-   sudo vcluster create my-cluster \
-     --set experimental.docker.loadBalancer.enabled=true \
-     --set experimental.docker.loadBalancer.forwardPorts=true
+   # Load balancer is enabled by default
    ```
 
 ### Cannot Access LoadBalancer Service
@@ -237,10 +231,7 @@ Common issues and solutions when using VIND.
    # Should show containerd or overlay2 with containerd
    ```
 
-2. **Check registry proxy is enabled:**
-   ```bash
-   vcluster describe my-cluster | grep -i registry
-   ```
+2. **Registry proxy is enabled by default**
 
 3. **Enable containerd storage:**
    - See: https://docs.docker.com/engine/storage/containerd/
@@ -253,7 +244,7 @@ Common issues and solutions when using VIND.
 
 5. **Check logs:**
    ```bash
-   docker logs vcluster-my-cluster | grep -i registry
+   docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager | grep -i registry
    ```
 
 ## Sleep/Wake Issues
@@ -309,7 +300,7 @@ Common issues and solutions when using VIND.
 
 4. **View container logs:**
    ```bash
-   docker logs vcluster-my-cluster
+   docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager
    ```
 
 ## Network Issues
@@ -472,20 +463,18 @@ Enable debug logging:
 
 ```bash
 vcluster create my-cluster --debug
-vcluster connect my-cluster --debug
 ```
 
 ### View Logs
 
 ```bash
-# Cluster logs
-vcluster logs my-cluster
+# Control plane logs
+docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager
 
-# Docker container logs
-docker logs vcluster-my-cluster
-
-# All vCluster containers
-docker ps | grep vcluster | awk '{print $1}' | xargs docker logs
+# Node logs (for node named worker-1)
+docker exec vcluster.node.my-cluster.worker-1 journalctl -u kubelet --nopager
+# or for containerd
+docker exec vcluster.node.my-cluster.worker-1 journalctl -u containerd --nopager
 ```
 
 ### Collect Information
@@ -516,8 +505,7 @@ When reporting issues, collect:
 
 5. **Logs:**
    ```bash
-   vcluster logs my-cluster > vcluster.log
-   docker logs vcluster-my-cluster > docker.log
+   docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager > vcluster.log
    ```
 
 ### Community Support

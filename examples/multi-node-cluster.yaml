@@ -1,4 +1,4 @@
-# Multi-Node VIND Cluster Configuration
+# Multi-Node vind Cluster Configuration
 # This example creates a cluster with multiple worker nodes
 
 experimental:
@@ -6,31 +6,21 @@ experimental:
     # Network configuration
     network: "vind-multi-node"
     
-    # Enable load balancer
-    loadBalancer:
-      enabled: true
-      forwardPorts: true
-    
-    # Enable registry proxy
-    registryProxy:
-      enabled: true
+    # Load balancer and registry proxy are enabled by default
     
     # Additional worker nodes
     # Note: env vars are Docker container environment variables, not Kubernetes node labels
     nodes:
       - name: worker-1
-        image: ghcr.io/loft-sh/vm-container
         # env vars are passed to the Docker container
         env:
           - "CUSTOM_VAR=value1"
       
       - name: worker-2
-        image: ghcr.io/loft-sh/vm-container
         env:
           - "CUSTOM_VAR=value2"
       
       - name: worker-3
-        image: ghcr.io/loft-sh/vm-container
         env:
           - "CUSTOM_VAR=value3"
 

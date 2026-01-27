@@ -1,11 +1,11 @@
-# VIND Documentation
+# vind Documentation
 
-Welcome to the VIND documentation! This directory contains comprehensive guides for using vCluster in Docker.
+Welcome to the vind documentation! This directory contains comprehensive guides for using vCluster in Docker.
 
 ## Documentation Index
 
 ### Getting Started
-- **[Getting Started Guide](./getting-started.md)** - Start here! Learn how to install and create your first VIND cluster.
+- **[Getting Started Guide](./getting-started.md)** - Start here! Learn how to install and create your first vind cluster.
 
 ### Configuration
 - **[Configuration Guide](./configuration.md)** - Complete reference for all configuration options, from basic to advanced.
@@ -14,7 +14,7 @@ Welcome to the VIND documentation! This directory contains comprehensive guides 
 - **[Advanced Features](./advanced-features.md)** - Deep dive into sleep/wake, load balancers, external nodes, and more.
 
 ### Comparisons
-- **[VIND vs KinD](./vind-vs-kind.md)** - Detailed comparison with Kubernetes in Docker, highlighting VIND's advantages.
+- **[vind vs KinD](./vind-vs-kind.md)** - Detailed comparison with Kubernetes in Docker, highlighting vind's advantages.
 
 ### Troubleshooting
 - **[Troubleshooting Guide](./troubleshooting.md)** - Common issues and their solutions.
@@ -43,7 +43,7 @@ docs/
 
 ## Reading Order
 
-If you're new to VIND:
+If you're new to vind:
 
 1. Start with the [Getting Started Guide](./getting-started.md)
 2. Review the [Configuration Guide](./configuration.md) for your use case
@@ -52,7 +52,7 @@ If you're new to VIND:
 
 If you're coming from KinD:
 
-1. Read [VIND vs KinD](./vind-vs-kind.md) first
+1. Read [vind vs KinD](./vind-vs-kind.md) first
 2. Follow the [Getting Started Guide](./getting-started.md)
 3. Check out [Advanced Features](./advanced-features.md)
 

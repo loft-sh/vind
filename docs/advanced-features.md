@@ -1,10 +1,10 @@
 # Advanced Features
 
-VIND offers powerful advanced features that set it apart from other local Kubernetes solutions. This guide covers sleep/wake, load balancers, external nodes, and more.
+vind offers powerful advanced features that set it apart from other local Kubernetes solutions. This guide covers sleep/wake, load balancers, external nodes, and more.
 
 ## Sleep and Wake
 
-One of VIND's standout features is the ability to pause and resume clusters, saving resources when not in use.
+One of vind's standout features is the ability to pause and resume clusters, saving resources when not in use.
 
 ### How It Works
 
@@ -36,7 +36,6 @@ vcluster resume my-cluster
 ```bash
 # Morning: Start your development cluster
 vcluster create dev-cluster
-vcluster connect dev-cluster
 # ... do your work ...
 
 # Lunch break: Pause to save resources
@@ -49,17 +48,7 @@ vcluster resume dev-cluster
 
 ## Automatic Load Balancers
 
-VIND provides automatic LoadBalancer service support out of the box.
-
-### Enable Load Balancer
-
-```yaml
-experimental:
-  docker:
-    loadBalancer:
-      enabled: true
-      forwardPorts: true  # Required on macOS with Docker Desktop
-```
+vind provides automatic LoadBalancer service support out of the box. Load balancer is enabled by default.
 
 ### Create a LoadBalancer Service
 
@@ -91,7 +80,7 @@ You can access it directly via the EXTERNAL-IP!
 
 ### How It Works
 
-- VIND automatically configures the Docker network
+- vind automatically configures the Docker network
 - LoadBalancer IPs are assigned from the Docker network
 - On macOS, ports are forwarded to localhost automatically
 - No MetalLB or other load balancer setup required!
@@ -106,14 +95,9 @@ You can access it directly via the EXTERNAL-IP!
 
 Speed up image pulls by using your local Docker daemon's containerd image storage.
 
-### Enable Registry Proxy
+### Registry Proxy
 
-```yaml
-experimental:
-  docker:
-    registryProxy:
-      enabled: true
-```
+Registry proxy is enabled by default.
 
 ### What It Does
 
@@ -185,7 +169,6 @@ vcluster create my-cluster \
 #### Step 2: Get Join Token
 
 ```bash
-vcluster connect my-cluster
 kubectl get secret join-token -n default -o jsonpath='{.data.token}' | base64 -d
 ```
 
@@ -224,7 +207,7 @@ vCluster VPN uses Tailscale technology to create secure connections:
 
 ## Custom CNI and CSI
 
-VIND natively supports Flannel CNI, but you can install other CNI plugins manually.
+vind natively supports Flannel CNI, but you can install other CNI plugins manually.
 
 ### CNI Options
 
@@ -283,11 +266,8 @@ experimental:
   docker:
     nodes:
       - name: worker-1
-        image: ghcr.io/loft-sh/vm-container
       - name: worker-2
-        image: ghcr.io/loft-sh/vm-container
       - name: worker-3
-        image: ghcr.io/loft-sh/vm-container
 ```
 
 ```bash
@@ -307,7 +287,7 @@ kubectl get nodes
 
 ## Snapshots and Restore
 
-**Coming Soon!** VIND will support saving and restoring cluster snapshots.
+**Coming Soon!** vind will support saving and restoring cluster snapshots.
 
 This will allow you to:
 - Save cluster state at any point
@@ -354,13 +334,13 @@ vcluster list
 # View container status
 docker ps -a | grep vcluster
 
-# Check logs
-vcluster logs my-cluster
+# Check control plane logs
+docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager
 ```
 
 ### Load Balancer Not Working
 
-1. Verify load balancer is enabled
+1. Load balancer is enabled by default
 2. Check Docker network connectivity
 3. On macOS, ensure sudo access for port forwarding
 4. Check service status: `kubectl get svc`
@@ -369,7 +349,7 @@ vcluster logs my-cluster
 
 1. Verify containerd storage: `docker info`
 2. Check containerd socket access
-3. Verify registry proxy is enabled
+3. Registry proxy is enabled by default
 4. Check logs for errors
 
 ### External Node Connection

@@ -1,5 +1,5 @@
-# Example LoadBalancer Service for VIND
-# This demonstrates how to use LoadBalancer services in VIND
+# Example LoadBalancer Service for vind
+# This demonstrates how to use LoadBalancer services in vind
 
 apiVersion: v1
 kind: Service
@@ -41,13 +41,10 @@ spec:
         - containerPort: 80
 
 # Usage:
-# 1. Create your VIND cluster with load balancer enabled:
-#    vcluster create my-cluster --set experimental.docker.loadBalancer.enabled=true
+# 1. Create your vind cluster (load balancer is enabled by default):
+#    vcluster create my-cluster
 #
-# 2. Connect to the cluster:
-#    vcluster connect my-cluster
-#
-# 3. Apply this configuration:
+# 2. Apply this configuration:
 #    kubectl apply -f loadbalancer-service.yaml
 #
 # 4. Check the service:

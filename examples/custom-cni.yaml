@@ -1,4 +1,4 @@
-# VIND Cluster with Custom CNI Configuration
+# vind Cluster with Custom CNI Configuration
 # This example shows how to disable the default Flannel CNI and install a custom CNI plugin
 #
 # IMPORTANT NOTES:
@@ -10,19 +10,12 @@
 
 experimental:
   docker:
-    # Enable load balancer
-    loadBalancer:
-      enabled: true
-    
-    # Enable registry proxy
-    registryProxy:
-      enabled: true
+    # Load balancer and registry proxy are enabled by default
     
     # IMPORTANT: Define at least one worker node
     # Without nodes, kubectl get nodes will return nothing
     nodes:
       - name: worker-1
-        image: ghcr.io/loft-sh/vm-container
 
 # CNI Configuration
 # vCluster only supports Flannel natively. To use other CNI plugins (Calico, Cilium, etc.):
@@ -44,7 +37,6 @@ controlPlane:
 
 # Create the cluster with:
 # vcluster create my-cni-cluster -f custom-cni.yaml
-# vcluster connect my-cni-cluster
 
 # Verify nodes are created (you should see worker-1):
 # kubectl get nodes

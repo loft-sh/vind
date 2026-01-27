@@ -1,6 +1,37 @@
-# Getting Started with VIND
+# Getting Started with vind
 
-This guide will walk you through setting up and using VIND (vCluster in Docker) for the first time.
+This guide will walk you through setting up and using vind (vCluster in Docker) for the first time.
+
+## Quickstart
+
+### Create Your First Cluster
+
+The simplest way to create a cluster:
+
+```bash
+vcluster create my-first-cluster
+```
+
+This will:
+- Create a Docker container with vCluster standalone
+- Install Kubernetes inside the container
+- Set up networking and storage
+- Generate a kubeconfig and connect automatically
+
+### Verify the Cluster
+
+After creation, verify it's working:
+
+```bash
+kubectl get nodes
+kubectl get namespaces
+kubectl get pods --all-namespaces
+```
+
+You should see:
+- A control plane node
+- Default namespaces (default, kube-system, etc.)
+- System pods running
 
 ## Prerequisites
 
@@ -12,7 +43,7 @@ Before you begin, ensure you have:
    docker ps  # Should work without errors
    ```
 
-2. **vCluster CLI** v0.31.0-rc.7 or later
+2. **vCluster CLI** v0.31.0 or later
    ```bash
    vcluster version
    ```
@@ -44,7 +75,7 @@ rm -f vcluster
 Upgrade to the required version:
 
 ```bash
-vcluster upgrade --version v0.31.0-rc.7
+vcluster upgrade --version v0.31.0
 ```
 
 ### Step 2: Set Docker as Default Driver
@@ -55,49 +86,12 @@ vcluster use driver docker
 
 This sets Docker as your default driver for all vCluster operations.
 
-## Creating Your First Cluster
-
-### Basic Cluster Creation
-
-The simplest way to create a cluster:
-
-```bash
-vcluster create my-first-cluster
-```
-
-This will:
-- Create a Docker container with vCluster standalone
-- Install Kubernetes inside the container
-- Set up networking and storage
-- Generate a kubeconfig for you
-
-### Verify the Cluster
-
-After creation, connect to your cluster:
-
-```bash
-vcluster connect my-first-cluster
-```
-
-Then verify it's working:
-
-```bash
-kubectl get nodes
-kubectl get namespaces
-kubectl get pods --all-namespaces
-```
-
-You should see:
-- A control plane node
-- Default namespaces (default, kube-system, etc.)
-- System pods running
-
 ## Optional: Start vCluster Platform UI
 
 For a better management experience, start the vCluster Platform:
 
 ```bash
-vcluster platform start --docker --version v4.7.0-alpha.0
+vcluster platform start --version v4.7.0-alpha.0
 ```
 
 This provides:
@@ -123,6 +117,14 @@ vcluster connect my-first-cluster
 ```
 
 This updates your kubeconfig to use the cluster.
+
+### Disconnect from a Cluster
+
+```bash
+vcluster disconnect my-first-cluster
+```
+
+This removes the cluster from your kubeconfig.
 
 ### Pause a Cluster
 
@@ -167,12 +169,12 @@ Now that you have a basic cluster running:
 
 1. Check Docker is running: `docker ps`
 2. Check available resources: `docker system df`
-3. View cluster logs: `vcluster logs my-first-cluster`
+3. View cluster logs: `docker exec vcluster.cp.my-first-cluster journalctl -u vcluster --nopager`
 
 ### Can't connect to cluster
 
 1. Ensure cluster is running: `vcluster list`
-2. Try reconnecting: `vcluster connect my-first-cluster --update-current`
+2. Reconnect: `vcluster connect my-first-cluster --update-current`
 3. Check kubeconfig: `kubectl config get-contexts`
 
 ### Port conflicts
@@ -189,7 +191,7 @@ For more troubleshooting help, see the [Troubleshooting Guide](./troubleshooting
 
 ## What's Next?
 
-Congratulations! You've created your first VIND cluster. Explore the documentation to learn more about:
+Congratulations! You've created your first vind cluster. Explore the documentation to learn more about:
 
 - [Configuration options](./configuration.md)
 - [Advanced features](./advanced-features.md)

@@ -1,10 +1,10 @@
-# Contributing to VIND
+# Contributing to vind
 
-Thank you for your interest in contributing to VIND! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to vind! This document provides guidelines and instructions for contributing.
 
-## What is VIND?
+## What is vind?
 
-VIND (vCluster in Docker) is a documentation and examples repository for the vCluster Docker driver feature. The core code lives in the [vCluster repository](https://github.com/loft-sh/vcluster).
+vind (vCluster in Docker) is a documentation and examples repository for the vCluster Docker driver feature. The core code lives in the [vCluster repository](https://github.com/loft-sh/vcluster).
 
 ## How to Contribute
 
@@ -20,7 +20,7 @@ We welcome contributions to improve documentation:
 
 ### Examples
 
-Share your VIND configurations and use cases:
+Share your vind configurations and use cases:
 
 - Real-world examples
 - Best practices
@@ -29,7 +29,7 @@ Share your VIND configurations and use cases:
 
 ### Reporting Issues
 
-If you find issues with VIND or the Docker driver:
+If you find issues with vind or the Docker driver:
 
 1. Check if it's a vCluster issue: [vCluster Issues](https://github.com/loft-sh/vcluster/issues)
 2. Check existing issues in this repository
@@ -140,4 +140,4 @@ For code changes to the Docker driver itself, please contribute to:
 
 Please be respectful and constructive in all interactions. We follow the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/).
 
-Thank you for contributing to VIND! 🎉
+Thank you for contributing to vind! 🎉

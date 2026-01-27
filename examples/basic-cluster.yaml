@@ -1,4 +1,4 @@
-# Basic VIND Cluster Configuration
+# Basic vind Cluster Configuration
 # This is a minimal configuration for getting started
 #
 # Note: In Docker mode, you need to define worker nodes explicitly.
@@ -6,20 +6,12 @@
 
 experimental:
   docker:
-    # Enable load balancer for easy service exposure
-    loadBalancer:
-      enabled: true
-      forwardPorts: true
-    
-    # Enable registry proxy for faster image pulls
-    registryProxy:
-      enabled: true
+    # Load balancer and registry proxy are enabled by default
     
     # Define at least one worker node
     # Without this, no nodes will be created and kubectl get nodes will be empty
     nodes:
       - name: worker-1
-        image: ghcr.io/loft-sh/vm-container
 
 # Kubernetes version (optional, defaults to v1.34.0)
 # Specify via: controlPlane.distro.k8s.version

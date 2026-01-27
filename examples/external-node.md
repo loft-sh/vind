@@ -1,4 +1,4 @@
-# Joining External Nodes to VIND (Private Nodes)
+# Joining External Nodes to vind (Private Nodes)
 
 **Important:** This guide is for **Private Nodes** mode, which is different from Docker experimental nodes. Private Nodes allows you to join real worker nodes (like EC2 instances) to your vCluster control plane using VPN.
 
@@ -12,11 +12,11 @@
 ## Step 1: Start vCluster Platform
 
 ```bash
-# Start the platform in Docker
-vcluster platform start --docker --version v4.7.0-alpha.0
+# Start the platform
+vcluster platform start --version v4.7.0-alpha.0
 ```
 
-## Step 2: Create Your VIND Cluster with Private Nodes
+## Step 2: Create Your vind Cluster with Private Nodes
 
 ```bash
 # Create cluster with private nodes and VPN enabled
@@ -29,9 +29,6 @@ vcluster create my-cluster \
 ## Step 3: Get Join Token
 
 ```bash
-# Connect to your cluster
-vcluster connect my-cluster
-
 # Get the join token
 kubectl get secret join-token -n default -o jsonpath='{.data.token}' | base64 -d
 ```
@@ -72,9 +69,6 @@ Replace:
 Back on your local machine:
 
 ```bash
-# Connect to cluster
-vcluster connect my-cluster
-
 # Check nodes
 kubectl get nodes
 

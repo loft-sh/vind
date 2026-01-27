@@ -1,10 +1,10 @@
-# VIND Configuration Guide
+# vind Configuration Guide
 
-VIND supports extensive configuration options to customize your Kubernetes clusters. This guide covers all available configuration parameters.
+vind supports extensive configuration options to customize your Kubernetes clusters. This guide covers all available configuration parameters.
 
 ## Configuration Methods
 
-You can configure VIND in several ways:
+You can configure vind in several ways:
 
 1. **Command-line flags** - Quick options
 2. **Values file** - YAML configuration file
@@ -25,14 +25,8 @@ experimental:
     # Container image
     image: "ghcr.io/loft-sh/vm-container"
     
-    # Enable load balancer
-    loadBalancer:
-      enabled: true
-      forwardPorts: true
-    
-    # Enable registry proxy
-    registryProxy:
-      enabled: true
+    # Load balancer and registry proxy are enabled by default
+    # No need to explicitly enable them
 ```
 
 Then create the cluster:
@@ -68,7 +62,6 @@ experimental:
   docker:
     nodes:
       - name: worker-1
-        image: ghcr.io/loft-sh/vm-container
         env:
           - "NODE_LABEL=worker"
         ports:
@@ -79,15 +72,13 @@ experimental:
           - "--cap-add=SYS_ADMIN"
       
       - name: worker-2
-        image: ghcr.io/loft-sh/vm-container
         # ... more configuration
 ```
 
 **Example:**
 ```bash
 vcluster create my-cluster \
-  --set experimental.docker.nodes[0].name=worker-1 \
-  --set experimental.docker.nodes[0].image=ghcr.io/loft-sh/vm-container
+  --set experimental.docker.nodes[0].name=worker-1
 ```
 
 ### Port Mappings
@@ -170,39 +161,18 @@ vcluster create my-cluster \
 
 ## Load Balancer Configuration
 
-Enable automatic LoadBalancer services:
-
-```yaml
-experimental:
-  docker:
-    loadBalancer:
-      enabled: true
-      forwardPorts: true  # Forward ports on macOS (Docker Desktop)
-```
+Load balancer is enabled by default. LoadBalancer services work out of the box with automatic IP assignment.
 
 **Benefits:**
 - LoadBalancer services work out of the box
 - No need for MetalLB or other load balancer solutions
 - Automatic IP assignment
 
-**Example:**
-```bash
-vcluster create my-cluster \
-  --set experimental.docker.loadBalancer.enabled=true
-```
-
-**Note:** On macOS with Docker Desktop, `forwardPorts` may require sudo access for privileged port binding.
+**Note:** On macOS with Docker Desktop, privileged port binding may require sudo access.
 
 ## Registry Proxy Configuration
 
-Enable pull-through caching via local Docker daemon:
-
-```yaml
-experimental:
-  docker:
-    registryProxy:
-      enabled: true
-```
+Registry proxy is enabled by default. It provides pull-through caching via local Docker daemon.
 
 **Benefits:**
 - Faster image pulls
@@ -212,11 +182,6 @@ experimental:
 **Requirements:**
 - Docker must use containerd image storage
 - See: https://docs.docker.com/engine/storage/containerd
-
-**Example:**
-```bash
-vcluster create my-cluster \
-  --set experimental.docker.registryProxy.enabled=true
 ```
 
 ## Node-Specific Configuration
@@ -228,9 +193,6 @@ experimental:
   docker:
     nodes:
       - name: worker-1
-        # Node-specific image
-        image: "ghcr.io/loft-sh/vm-container:custom"
-        
         # Node-specific ports
         ports:
           - "30080:80"
@@ -282,26 +244,17 @@ experimental:
     args:
       - "--cap-add=SYS_ADMIN"
     
-    # Load balancer
-    loadBalancer:
-      enabled: true
-      forwardPorts: true
-    
-    # Registry proxy
-    registryProxy:
-      enabled: true
+    # Load balancer and registry proxy are enabled by default
     
     # Additional nodes
     nodes:
       - name: worker-1
-        image: "ghcr.io/loft-sh/vm-container"
         env:
           - "NODE_LABEL=worker"
         ports:
           - "30080:80"
       
       - name: worker-2
-        image: "ghcr.io/loft-sh/vm-container"
         env:
           - "NODE_LABEL=worker"
         ports:
@@ -341,7 +294,7 @@ controlPlane:
 
 ### Custom CNI
 
-VIND natively supports Flannel CNI. To use other CNI plugins (Calico, Cilium, etc.):
+vind natively supports Flannel CNI. To use other CNI plugins (Calico, Cilium, etc.):
 
 1. **Disable Flannel** in your configuration:
 ```yaml
