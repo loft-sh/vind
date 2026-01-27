@@ -34,6 +34,45 @@
 
 ---
 
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker installed and running
+- vCluster CLI v0.31.0 or later
+
+### Installation
+
+```bash
+# Upgrade vCluster CLI to the latest version
+vcluster upgrade --version v0.31.0
+
+# Set Docker as the default driver
+vcluster use driver docker
+```
+
+### Optional: Start vCluster Platform UI
+
+```bash
+# Start vCluster Platform (optional but recommended)
+vcluster platform start --version v4.7.0-alpha.0
+```
+
+This gives you a beautiful web UI to manage your clusters!
+
+### Create Your First Cluster
+
+```bash
+# Create a vCluster in Docker (automatically connects)
+vcluster create my-cluster
+
+# Verify it's working
+kubectl get nodes
+kubectl get namespaces
+```
+
+---
+
 ## ✨ Key Features
 
 ### 🎮 Kubernetes UI via vCluster Platform
@@ -61,45 +100,6 @@ Connect real cloud instances (like EC2) as nodes to your local cluster - how coo
 
 ### 🔧 Flexible CNI and CSI
 Choose your own Container Network Interface and Container Storage Interface plugins.
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Docker installed and running
-- vCluster CLI v0.31.0 or later
-
-### Installation
-
-```bash
-# Upgrade vCluster CLI to the latest version
-vcluster upgrade --version v0.31.0
-
-# Set Docker as the default driver
-vcluster use driver docker
-```
-
-### Create Your First Cluster
-
-```bash
-# Create a vCluster in Docker (automatically connects)
-vcluster create my-cluster
-
-# Verify it's working
-kubectl get nodes
-kubectl get namespaces
-```
-
-### Optional: Start vCluster Platform UI
-
-```bash
-# Start vCluster Platform (optional but recommended)
-vcluster platform start --version v4.7.0-alpha.0
-```
-
-This gives you a beautiful web UI to manage your clusters!
 
 ---
 
