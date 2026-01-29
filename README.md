@@ -55,7 +55,7 @@ vcluster use driver docker
 
 ```bash
 # Start vCluster Platform (optional but recommended)
-vcluster platform start --version v4.7.0-alpha.0
+vcluster platform start
 ```
 
 This gives you a beautiful web UI to manage your clusters!
