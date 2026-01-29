@@ -6,7 +6,7 @@
 
 **Next-Level Kubernetes Development - Run Kubernetes clusters as Docker containers**
 
-[![GitHub stars](https://img.shields.io/github/stars/saiyam1814/vind?style=social)](https://github.com/saiyam1814/vind/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/loft-sh/vind?style=social)](https://github.com/loft-sh/vind/stargazers)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 **[Quick Start](#-quick-start)** • **[Features](#-key-features)** • **[Documentation](#-documentation)** • **[vs KinD](#-vind-vs-kind)** • **[Examples](./examples/)**
