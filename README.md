@@ -235,7 +235,7 @@ docker exec vcluster.node.my-cluster.worker-1 journalctl -u kubelet --nopager
 ## 🔗 Related Projects
 
 - **[vCluster](https://github.com/loft-sh/vcluster)** - The underlying virtual cluster technology
-- **[vCluster Platform](https://github.com/loft-sh/vcluster-platform)** - Management platform for vClusters
+- **[vCluster Platform](https://github.com/loft-sh/loft)** - Management platform for vClusters
 - **[KinD](https://github.com/kubernetes-sigs/kind)** - Kubernetes in Docker (alternative)
 
 ---
