@@ -54,7 +54,7 @@ vcluster use driver docker
 ### Optional: Start vCluster Platform UI
 
 ```bash
-# Start vCluster Platform (optional but recommended)
+# Start vCluster Platform (optional but recommended and required for private / external nodes)
 vcluster platform start
 ```
 
