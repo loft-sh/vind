@@ -44,6 +44,45 @@ kubectl apply -f loadbalancer-service.yaml
 kubectl get svc nginx-loadbalancer
 ```
 
+### [multi-node.yaml](./multi-node.yaml)
+Minimal 3-worker-node cluster configuration.
+
+**Usage:**
+```bash
+vcluster create my-cluster -f multi-node.yaml
+kubectl get nodes
+```
+
+### [affinity.yaml](./affinity.yaml)
+Node affinity example — schedule a workload only on worker nodes (no control-plane).
+
+**Usage:**
+```bash
+# With a multi-node cluster running
+kubectl apply -f affinity.yaml
+kubectl get pods -o wide
+```
+
+### [antiaffinity.yaml](./antiaffinity.yaml)
+Topology spread constraints — spread pods evenly across nodes using `topologySpreadConstraints`.
+
+**Usage:**
+```bash
+# With a multi-node cluster running
+kubectl apply -f antiaffinity.yaml
+kubectl get pods -o wide
+```
+
+### [snapshot-restore.md](./snapshot-restore.md)
+End-to-end guide for snapshot and restore — local files, OCI registries, S3, multi-node clusters, and cloning environments under a new name.
+
+**Highlights:**
+- Stateful stack backup and restore (PVCs survive)
+- Share environments via OCI registry (`oci://ghcr.io/...`)
+- Clone a cluster with a different name using `vcluster create --restore`
+- S3/MinIO example with full URL params
+- Multi-node snapshot walkthrough
+
 ### [external-node.md](./external-node.md)
 Guide for joining external nodes (like EC2 instances) to your local vind cluster.
 

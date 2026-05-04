@@ -291,15 +291,69 @@ kubectl get nodes
 
 ## Snapshots and Restore
 
-**Coming Soon!** vind will support saving and restoring cluster snapshots.
+Available in vCluster v0.34.0+. Save your entire cluster state to an OCI registry, S3 bucket, or a file inside the cluster container — then restore it on any vind cluster.
 
-This will allow you to:
-- Save cluster state at any point
-- Restore to a previous state
-- Create templates from snapshots
-- Share cluster configurations
+### Storage Backends
 
-Stay tuned for updates!
+| Backend | Example target |
+|---------|---------------|
+| OCI registry | `oci://ghcr.io/my-user/my-repo:my-tag` |
+| S3 bucket | `s3://my-bucket/my-bucket-key` |
+| Container filesystem | `container:///data/my-snapshot.tar.gz` |
+
+### Create a Snapshot
+
+```bash
+# Snapshot to an OCI registry (recommended for sharing)
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+
+# Snapshot to S3
+vcluster snapshot create my-cluster s3://my-bucket/my-cluster-snapshot
+
+# Snapshot to a local file inside the cluster container
+vcluster snapshot create my-cluster container:///data/my-snapshot.tar.gz
+
+# Include CSI volume snapshots (requires Private Nodes mode)
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:my-tag --include-volumes
+```
+
+The `snapshot create` command is asynchronous — it submits a snapshot request that is processed by the vCluster controller. Use `vcluster snapshot get` to check progress:
+
+```bash
+vcluster snapshot get my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+```
+
+### Restore a Cluster
+
+```bash
+# Restore from OCI registry
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+
+# Restore from S3
+vcluster restore my-cluster s3://my-bucket/my-cluster-snapshot
+
+# Restore from local file
+vcluster restore my-cluster container:///data/my-snapshot.tar.gz
+
+# Restore including volume snapshots
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:my-tag --restore-volumes
+```
+
+### Clone a Cluster with a Different Name
+
+The `--restore` flag on `vcluster create` creates a new cluster from a snapshot under a new name — useful for spinning up a debug copy of staging or creating per-developer clones:
+
+```bash
+vcluster create debug-copy --restore oci://ghcr.io/myorg/snapshots:staging-v1
+```
+
+### Use Cases
+
+- **Reproducible demos** — snapshot a configured demo cluster and restore it fresh before each presentation
+- **Team sharing** — push a snapshot to an OCI registry and let teammates pull the exact same environment
+- **Backup before experiments** — snapshot before installing new operators or breaking changes
+- **CI/CD templates** — seed test clusters from a pre-built snapshot to skip long setup steps
+- **Onboarding** — new engineers restore a golden environment on day one instead of running 12 Helm installs
 
 ## Best Practices
 

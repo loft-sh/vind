@@ -6,7 +6,7 @@ Quick reference guide for common vind operations.
 
 ```bash
 # Upgrade vCluster CLI
-vcluster upgrade --version v0.31.0
+vcluster upgrade --version v0.34.0
 
 # Set Docker driver
 vcluster use driver docker
@@ -44,10 +44,29 @@ vcluster describe my-cluster
 
 ```bash
 # Start platform
-vcluster platform start --version v4.7.0-alpha.0
+vcluster platform start
 
 # Stop platform
 vcluster platform stop
+```
+
+## Snapshots and Restore
+
+```bash
+# Create snapshot (OCI)
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+
+# Create snapshot (S3)
+vcluster snapshot create my-cluster s3://my-bucket/my-key
+
+# Create snapshot (local file in container)
+vcluster snapshot create my-cluster container:///data/my-snapshot.tar.gz
+
+# Check snapshot status
+vcluster snapshot get my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+
+# Restore from snapshot
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:my-tag
 ```
 
 ## Configuration

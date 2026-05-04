@@ -43,7 +43,7 @@ Before you begin, ensure you have:
    docker ps  # Should work without errors
    ```
 
-2. **vCluster CLI** v0.31.0 or later
+2. **vCluster CLI** v0.34.0 or later
    ```bash
    vcluster version
    ```
@@ -75,7 +75,7 @@ rm -f vcluster
 Upgrade to the required version:
 
 ```bash
-vcluster upgrade --version v0.31.0
+vcluster upgrade --version v0.34.0
 ```
 
 ### Step 2: Set Docker as Default Driver
@@ -91,7 +91,7 @@ This sets Docker as your default driver for all vCluster operations.
 For a better management experience, start the vCluster Platform:
 
 ```bash
-vcluster platform start --version v4.7.0-alpha.0
+vcluster platform start
 ```
 
 This provides:

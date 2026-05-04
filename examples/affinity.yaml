@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-only
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worker-only
+  template:
+    metadata:
+      labels:
+        app: worker-only
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: DoesNotExist
+      containers:
+      - name: nginx
+        image: nginx:latest

@@ -12,7 +12,8 @@ This document provides a comprehensive comparison between vind (vCluster in Dock
 | **Image Caching** | ✅ Pull-through via Docker daemon | ❌ Direct registry pulls |
 | **External Nodes** | ✅ Join cloud instances via VPN | ❌ Local only |
 | **CNI/CSI Choice** | ✅ Your choice | ⚠️ Limited |
-| **Snapshots** | ✅ Coming soon | ❌ Not available |
+| **Snapshots** | ✅ OCI, S3, and local (vCluster 0.34+) | ❌ Not available |
+| **K8s Upgrades** | ✅ In-place, no recreation needed | ❌ Delete and recreate |
 | **Multi-cluster** | ✅ Easy management | ⚠️ Manual |
 | **Resource Usage** | ✅ Optimized | ⚠️ Higher overhead |
 
@@ -173,7 +174,32 @@ deploy:
 
 ---
 
-### 7. Multi-Cluster Management
+### 7. Snapshots and Restore
+
+#### vind
+- **OCI Registry**: Push cluster snapshots to any OCI-compatible registry
+- **S3 / Azure Blob**: Store snapshots in cloud object storage
+- **Local Files**: Save snapshots inside the cluster container filesystem
+- **Volume Snapshots**: Optionally include CSI volume snapshots (`--include-volumes`)
+- **Async Processing**: Snapshot creation is async and trackable
+
+```bash
+# Save cluster to OCI registry
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:v1
+
+# Restore on another machine or after deletion
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:v1
+```
+
+#### KinD
+- **No snapshot support**: No built-in snapshot or restore mechanism
+- **Manual workarounds**: Export workloads via `kubectl get all -o yaml`, lose volumes
+
+**Winner: vind** — portable, versioned cluster snapshots with no workarounds
+
+---
+
+### 8. Multi-Cluster Management
 
 #### vind
 - **Easy Management**: `vcluster list` shows all clusters
@@ -194,7 +220,7 @@ vcluster list
 
 ---
 
-### 8. Resource Usage
+### 9. Resource Usage
 
 #### vind
 - **Optimized**: Efficient resource usage
@@ -210,7 +236,7 @@ vcluster list
 
 ---
 
-### 9. Ease of Use
+### 10. Ease of Use
 
 #### vind
 ```bash
@@ -236,7 +262,7 @@ kubectl apply -f metallb-config.yaml
 
 ---
 
-### 10. Production Readiness
+### 11. Production Readiness
 
 #### vind
 - **Based on vCluster**: Production-proven technology
@@ -261,8 +287,10 @@ kubectl apply -f metallb-config.yaml
 - ✅ You want automatic load balancers
 - ✅ You need to join external nodes
 - ✅ You want better image caching
+- ✅ You need snapshot and restore capabilities
 - ✅ You need production-like features
 - ✅ You want easier multi-cluster management
+- ✅ You need in-place Kubernetes version upgrades
 
 ### Choose KinD If:
 - ✅ You need a simple, lightweight solution
@@ -309,14 +337,14 @@ vind offers significant advantages over KinD:
 1. **Better Developer Experience**: UI, sleep/wake, automatic features
 2. **More Features**: Load balancers, external nodes, caching
 3. **Production Ready**: Based on proven vCluster technology
-4. **Future Proof**: Active development, snapshots coming soon
+4. **Future Proof**: Active development, snapshots available, in-place K8s upgrades
 
 While KinD is great for simple use cases, vind provides a more complete solution for modern Kubernetes development.
 
 **Try vind today and experience the difference!**
 
 ```bash
-vcluster upgrade --version v0.31.0
+vcluster upgrade --version v0.34.0
 vcluster use driver docker
 vcluster create my-cluster
 ```

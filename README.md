@@ -17,20 +17,21 @@
 
 ## 🎯 What is vind?
 
-**vind (vCluster in Docker)** is a revolutionary way to run Kubernetes clusters directly as Docker containers. Built on top of [vCluster](https://github.com/loft-sh/vcluster), vind combines the power of virtual Kubernetes clusters with the simplicity of Docker, creating isolated Kubernetes environments that are perfect for development, testing, and CI/CD pipelines.
+**vind (vCluster in Docker)** is an open-source way to run Kubernetes clusters directly as Docker containers. Built on top of [vCluster](https://github.com/loft-sh/vcluster), vind combines the power of virtual Kubernetes clusters with the simplicity of Docker, creating isolated Kubernetes environments that are perfect for development, testing, and CI/CD pipelines.
 
 **Note:** vind uses vCluster's Private Nodes mode internally. This is automatically enabled when using the Docker driver and is required for proper operation. This is expected behavior, not a configuration issue.
 
 ### Why vind?
 
 - 🚀 **Faster than KinD** - Optimized container-based architecture
-- 💤 **Sleep & Wake** - Pause clusters to save resources, resume instantly
+- 💤 **Sleep & Wake** - Pause clusters to save resources, resume in under 3 seconds
 - 🎨 **Built-in UI** - Free vCluster Platform UI for cluster management
 - ⚡ **Load Balancers OOB** - Automatic LoadBalancer services without extra setup
 - 🐳 **Docker Native** - Leverages Docker's networking and storage
 - 🔄 **Pull-through Cache** - Faster image pulls via local Docker daemon
 - 🌐 **Hybrid Nodes** - Join external nodes (even cloud instances) via VPN
-- 📸 **Snapshots** - Save and restore cluster state (coming soon)
+- 📸 **Snapshots** - Save cluster state to OCI registries, S3, or local files and restore them
+- 🔧 **In-Place K8s Upgrades** - Upgrade Kubernetes version without deleting the cluster
 
 ---
 
@@ -39,13 +40,13 @@
 ### Prerequisites
 
 - Docker installed and running
-- vCluster CLI v0.31.0 or later
+- vCluster CLI v0.34.0 or later
 
 ### Installation
 
 ```bash
 # Upgrade vCluster CLI to the latest version
-vcluster upgrade --version v0.31.0
+vcluster upgrade --version v0.34.0
 
 # Set Docker as the default driver
 vcluster use driver docker
@@ -98,7 +99,21 @@ Hassle-free service exposure with automatic LoadBalancer support - works out of 
 Faster image pulls and reduced bandwidth by leveraging your local Docker daemon's image cache. (Enabled by default)
 
 ### 🌐 Join External Nodes
-Connect real cloud instances (like EC2) as nodes to your local cluster - how cool is that!
+Connect real cloud instances (like EC2, GCP, Azure) as nodes to your local cluster via built-in Tailscale VPN.
+
+### 📸 Snapshots and Restore
+Save your entire cluster state to an OCI registry, S3 bucket, or local file — then restore it on any vind cluster. Perfect for sharing reproducible environments or safeguarding demo setups.
+
+```bash
+# Snapshot to an OCI registry
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+
+# Snapshot to a local file inside the cluster container
+vcluster snapshot create my-cluster container:///data/my-snapshot.tar.gz
+
+# Restore from an OCI registry
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+```
 
 ### 🔧 Flexible CNI and CSI
 Choose your own Container Network Interface and Container Storage Interface plugins.
@@ -109,7 +124,7 @@ Choose your own Container Network Interface and Container Storage Interface plug
 
 - **[Getting Started Guide](./docs/getting-started.md)** - Detailed setup and first steps
 - **[Configuration Guide](./docs/configuration.md)** - All configuration options explained
-- **[Advanced Features](./docs/advanced-features.md)** - Sleep/wake, load balancers, external nodes
+- **[Advanced Features](./docs/advanced-features.md)** - Sleep/wake, load balancers, snapshots, external nodes
 - **[vind vs KinD](./docs/vind-vs-kind.md)** - Detailed comparison
 - **[Examples](./examples/)** - Real-world examples and use cases
 - **[Troubleshooting](./docs/troubleshooting.md)** - Common issues and solutions
@@ -126,7 +141,8 @@ Choose your own Container Network Interface and Container Storage Interface plug
 | **Image Caching** | ✅ Pull-through via Docker daemon | ❌ Direct registry pulls |
 | **External Nodes** | ✅ Join cloud instances via VPN | ❌ Local only |
 | **CNI/CSI Choice** | ✅ Your choice | ⚠️ Limited |
-| **Snapshots** | ✅ Coming soon | ❌ Not available |
+| **Snapshots** | ✅ OCI, S3, and local (vCluster 0.34+) | ❌ Not available |
+| **K8s Upgrades** | ✅ In-place, no cluster recreation | ❌ Delete and recreate |
 
 👉 **[See detailed comparison](./docs/vind-vs-kind.md)**
 
@@ -173,8 +189,12 @@ Check out our [examples directory](./examples/) for:
 
 - [Basic cluster setup](./examples/basic-cluster.yaml)
 - [Multi-node cluster](./examples/multi-node-cluster.yaml)
+- [Multi-node cluster (simple)](./examples/multi-node.yaml)
 - [With custom CNI](./examples/custom-cni.yaml)
 - [Load balancer services](./examples/loadbalancer-service.yaml)
+- [Node affinity](./examples/affinity.yaml)
+- [Pod anti-affinity / topology spread](./examples/antiaffinity.yaml)
+- [Snapshot and restore](./examples/snapshot-restore.md)
 - [External node joining](./examples/external-node.md)
 
 ---
@@ -224,6 +244,14 @@ vcluster delete my-cluster
 
 # Describe cluster
 vcluster describe my-cluster
+
+# Snapshot cluster state (OCI, S3, or local)
+vcluster snapshot create my-cluster oci://ghcr.io/my-user/my-repo:my-tag
+vcluster snapshot create my-cluster s3://my-bucket/my-key
+vcluster snapshot create my-cluster container:///data/my-snapshot.tar.gz
+
+# Restore cluster from snapshot
+vcluster restore my-cluster oci://ghcr.io/my-user/my-repo:my-tag
 
 # View control plane logs
 docker exec vcluster.cp.my-cluster journalctl -u vcluster --nopager
