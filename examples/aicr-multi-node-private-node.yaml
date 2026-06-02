@@ -1,0 +1,93 @@
+  # ============================================================================
+  # Multi-Node vind (vCluster-in-Docker) Tenant Cluster
+  # ============================================================================
+  # This config produced the "aicr" tenant cluster seen in the demo logs:
+  #   $ vcluster list
+  #     NAME | STATUS  | CONNECTED | AGE
+  #     aicr | running | True      | 42m
+  #
+  # It is a private-nodes control plane: a real Kubernetes control plane that
+  # real nodes JOIN (not the syncer/host-backed mode). That is what lets a
+  # physical GPU machine register as a node. The logs showed 5 nodes total,
+  # coming from the two sections below:
+  #
+  #   $ kubectl get nodes -o wide
+  #   NAME                       ROLES                  VERSION   INTERNAL-IP   KERNEL              <- source
+  #   aicr                       control-plane,master   v1.34.0   172.19.0.2    6.12.54-linuxkit    <- this control plane
+  #   worker-1                   <none>                 v1.34.0   172.19.0.3    6.12.54-linuxkit    <- experimental.docker.nodes
+  #   worker-2                   <none>                 v1.34.0   172.19.0.4    6.12.54-linuxkit    <- experimental.docker.nodes
+  #   worker-3                   <none>                 v1.34.0   172.19.0.5    6.12.54-linuxkit    <- experimental.docker.nodes
+  #   instance-20260602-102458   <none>                 v1.34.0   10.128.0.31   6.17.0-1016-gcp     <- a remote GPU node, joined via privateNodes + VPN
+  #
+  # Note the two distinct networks/kernels: 172.19.0.x with a linuxkit kernel
+  # are local Docker containers; 10.128.0.x with a -gcp kernel is a real Google
+  # Cloud A100 instance. They only share one cluster because of the VPN below.
+  # ============================================================================
+
+  experimental:
+    docker:
+      # --- Local worker nodes, run as Docker containers (vind) ---------------
+      # Each entry becomes one local Docker container that joins as a worker.
+      # In the logs these are worker-1/2/3 on the 172.19.0.x Docker bridge with
+      # the linuxkit kernel (i.e. Docker Desktop), giving a cheap multi-node
+      # topology for control-plane/scheduling testing without real hardware.
+      nodes:
+        - name: worker-1
+          # env = environment variables for the Docker CONTAINER itself.
+          # These are NOT Kubernetes node labels and do NOT appear on the node
+          # object, so they cannot be used for nodeSelector/affinity scheduling.
+          env:
+            - "CUSTOM_VAR=value1"
+
+        - name: worker-2
+          env:
+            - "CUSTOM_VAR=value2"
+
+        # No env block: a worker with no extra container variables. The GPU
+        # workloads in the demo did NOT land here anyway. These linuxkit
+        # containers have no GPU; the A100 work ran on the remote private node.
+        - name: worker-3
+
+  controlPlane:
+    distro:
+      k8s:
+        # Pin the Kubernetes version. v1.34.0 is what every node reported in the
+        # logs, and it cleared the recipe's readiness constraint:
+        #   readiness constraint passed: name=K8s.server.version
+        #     expected=">= 1.25" actual=v1.34.0
+        # Keep control plane and joining nodes on the same version to avoid skew.
+        version: "v1.34.0"
+
+  privateNodes:
+    # Enable private-nodes mode. This is the prerequisite for a real, external
+    # machine (the GCP A100, instance-20260602-102458) to join as a worker.
+    # Without it you'd be limited to the local Docker workers above.
+    enabled: true
+
+    vpn:
+      # Bring up a VPN between the control plane and joining nodes. The A100 box
+      # lives on a different network (10.128.0.x GCP) than the control plane
+      # (172.19.0.x Docker), so it reaches the API and joins over this VPN.
+      enabled: true
+
+      nodeToNode:
+        # Extend the VPN to node-to-node (pod-to-pod across nodes) traffic, not
+        # just node-to-control-plane. The demo relied on this: DCGM exporter on
+        # the GPU node was scraped by Prometheus, the DRA driver controller (on
+        # the control plane) coordinated with the kubelet plugin on the GPU
+        # node, and the dra-support check ran a pod that allocated a real GPU.
+        # All of that is cross-node traffic that needs this path.
+        enabled: true
+
+  # ----------------------------------------------------------------------------
+  # Create the tenant cluster:
+  #   vcluster create aicr -f multi-node-cluster.yaml
+  #
+  # Verify the topology (expect control plane + 3 Docker workers, and the
+  # external GPU node once it has joined over the VPN):
+  #   kubectl get nodes -o wide
+  #
+  # Confirm the joined node really has the GPU (run on the A100 box):
+  #   nvidia-smi   # -> NVIDIA A100-SXM4-40GB, driver 580.159.03, CUDA 13.0
+  # ----------------------------------------------------------------------------
+
